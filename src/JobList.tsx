@@ -109,7 +109,7 @@ export default function JobList({ email }: Props) {
           </button>
         ))}
         <button className={showApplied ? 'tab active' : 'tab'} onClick={() => setTab('applied')}>
-          Sökta <span className="count">{appliedJobs.length}</span>
+          Sökta <span className="count">{appliedInMonth.length}</span>
         </button>
       </nav>
 
