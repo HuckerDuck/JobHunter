@@ -14,5 +14,7 @@ export interface Job {
   applied_date: string | null;
   skipped: boolean;
   note: string | null;
+  found: string | null;
+  skip_reason: string | null;
   created_at: string;
 }

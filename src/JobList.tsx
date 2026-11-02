@@ -103,10 +103,15 @@ export default function JobList({ email }: Props) {
       <ul className="cards">
         {visible.map((job: Job) => {
           const urgent: boolean = job.deadline !== null && daysLeft(job.deadline) <= 3;
+          // found today or yesterday by the night search
+          const isNew: boolean = !showApplied && job.found !== null && daysLeft(job.found) >= -1;
           return (
             <li key={job.id} className={`card ${job.status}`}>
               <div className="card-head">
-                <span className={`pill ${job.status}`}>{job.status === 'gron' ? 'Grönt' : 'Gult'}</span>
+                <span className="pills">
+                  <span className={`pill ${job.status}`}>{job.status === 'gron' ? 'Grönt' : 'Gult'}</span>
+                  {isNew && <span className="pill new">Ny</span>}
+                </span>
                 {showApplied ? (
                   <span className="deadline">
                     {TRACK_LABELS[job.track]}, sökt {job.applied_date ?? ''}

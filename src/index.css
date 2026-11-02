@@ -261,6 +261,16 @@ h2 {
   color: var(--yellow);
 }
 
+.pills {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.pill.new {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
 .deadline {
   font-size: 0.85rem;
   color: var(--muted);
