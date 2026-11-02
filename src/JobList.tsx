@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from './supabase';
 import { Job, Track } from './types';
 import { daysLeft, deadlineText, sortJobs, todayIso } from './jobUtils';
+import ActivityReport from './ActivityReport';
 
-type View = 'todo' | 'applied';
+type View = 'todo' | 'applied' | 'report';
 
 interface Props {
   email: string;
@@ -69,13 +70,16 @@ export default function JobList({ email }: Props) {
         </button>
       </header>
 
-      <nav className="tabs">
-        {(Object.keys(TRACK_LABELS) as Track[]).map((t: Track) => (
-          <button key={t} className={t === track ? 'tab active' : 'tab'} onClick={() => setTrack(t)}>
-            {TRACK_LABELS[t]} <span className="count">{countTodo(t)}</span>
-          </button>
-        ))}
-      </nav>
+      {/* report shows both tracks, so no tabs there */}
+      {view !== 'report' && (
+        <nav className="tabs">
+          {(Object.keys(TRACK_LABELS) as Track[]).map((t: Track) => (
+            <button key={t} className={t === track ? 'tab active' : 'tab'} onClick={() => setTrack(t)}>
+              {TRACK_LABELS[t]} <span className="count">{countTodo(t)}</span>
+            </button>
+          ))}
+        </nav>
+      )}
 
       <div className="toggle">
         <button className={view === 'todo' ? 'active' : ''} onClick={() => setView('todo')}>
@@ -84,14 +88,19 @@ export default function JobList({ email }: Props) {
         <button className={view === 'applied' ? 'active' : ''} onClick={() => setView('applied')}>
           Sökta
         </button>
+        <button className={view === 'report' ? 'active' : ''} onClick={() => setView('report')}>
+          Rapport
+        </button>
       </div>
 
       {error && <p className="error">{error}</p>}
       {loading && <p className="muted">Laddar jobb...</p>}
-      {!loading && visible.length === 0 && (
+      {!loading && view === 'report' && <ActivityReport jobs={jobs} />}
+      {!loading && view !== 'report' && visible.length === 0 && (
         <p className="empty">{view === 'todo' ? 'Inget kvar att söka här. Bra jobbat!' : 'Inga sökta jobb än.'}</p>
       )}
 
+      {view !== 'report' && (
       <ul className="cards">
         {visible.map((job: Job) => {
           const urgent: boolean = job.deadline !== null && daysLeft(job.deadline) <= 3;
@@ -138,6 +147,7 @@ export default function JobList({ email }: Props) {
           );
         })}
       </ul>
+      )}
     </main>
   );
 }
