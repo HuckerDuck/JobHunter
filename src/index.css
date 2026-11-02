@@ -291,6 +291,13 @@ h2 {
   border-radius: 8px;
 }
 
+.note-fold summary {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

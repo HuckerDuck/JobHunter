@@ -117,7 +117,14 @@ export default function JobList({ email }: Props) {
               </div>
               <h2>{job.title}</h2>
               <p className="employer">{job.employer}</p>
-              {job.note && <p className="note">{job.note}</p>}
+              {job.note && !showApplied && <p className="note">{job.note}</p>}
+              {/* already applied, so the note can stay folded */}
+              {job.note && showApplied && (
+                <details className="note-fold">
+                  <summary>Anteckning</summary>
+                  <p className="note">{job.note}</p>
+                </details>
+              )}
 
               <div className="actions">
                 <a className="btn ghost" href={job.url} target="_blank" rel="noreferrer">
