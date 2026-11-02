@@ -19,8 +19,8 @@ const TRACK_LABELS: Record<Track, string> = {
 export default function JobList({ email }: Props) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [tab, setTab] = useState<Tab>('preschool');
-  // empty string means all months
-  const [month, setMonth] = useState<string>('');
+  // starts on this month, empty string means all months
+  const [month, setMonth] = useState<string>(todayIso().slice(0, 7));
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
