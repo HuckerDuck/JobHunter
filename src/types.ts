@@ -16,5 +16,7 @@ export interface Job {
   note: string | null;
   found: string | null;
   skip_reason: string | null;
+  letter_draft: string | null;
+  sent_letter: string | null;
   created_at: string;
 }

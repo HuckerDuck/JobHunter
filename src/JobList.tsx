@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 import { Job, Track } from './types';
 import { daysLeft, deadlineText, sortJobs, todayIso } from './jobUtils';
 import ActivityReport from './ActivityReport';
+import LetterBox from './LetterBox';
 
 // a track tab, or the applied tab with both tracks
 type Tab = Track | 'applied';
@@ -144,6 +145,7 @@ export default function JobList({ email }: Props) {
               <h2>{job.title}</h2>
               <p className="employer">{job.employer}</p>
               {job.note && !showApplied && <p className="note">{job.note}</p>}
+              {job.letter_draft && !showApplied && <LetterBox label="Brevutkast" text={job.letter_draft} />}
               {/* already applied, so the note can stay folded */}
               {job.note && showApplied && (
                 <details className="note-fold">
