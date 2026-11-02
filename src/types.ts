@@ -18,5 +18,7 @@ export interface Job {
   skip_reason: string | null;
   letter_draft: string | null;
   sent_letter: string | null;
+  // tech the ad asks for, written by the night search
+  skills: string[];
   created_at: string;
 }
