@@ -146,6 +146,7 @@ export default function JobList({ email }: Props) {
               <p className="employer">{job.employer}</p>
               {job.note && !showApplied && <p className="note">{job.note}</p>}
               {job.letter_draft && !showApplied && <LetterBox label="Brevutkast" text={job.letter_draft} />}
+              {job.sent_letter && showApplied && <LetterBox label="Skickat brev" text={job.sent_letter} />}
               {/* already applied, so the note can stay folded */}
               {job.note && showApplied && (
                 <details className="note-fold">
@@ -172,7 +173,10 @@ export default function JobList({ email }: Props) {
                     </button>
                     <button
                       className="btn primary"
-                      onClick={() => updateJob(job.id, { applied: true, applied_date: todayIso() })}
+                      onClick={() =>
+                        // keep the draft as the sent letter so I can read it before an interview
+                        updateJob(job.id, { applied: true, applied_date: todayIso(), sent_letter: job.letter_draft })
+                      }
                     >
                       Sökt
                     </button>
