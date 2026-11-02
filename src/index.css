@@ -301,6 +301,28 @@ h2 {
   border-radius: 8px;
 }
 
+.expired {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.expired summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.expired ul {
+  padding-left: 1.2rem;
+}
+
+.expired li {
+  margin-bottom: 0.4rem;
+}
+
+.expired a {
+  color: var(--text);
+}
+
 .note-fold summary {
   margin-top: 0.5rem;
   font-size: 0.85rem;

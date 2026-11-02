@@ -11,6 +11,9 @@ interface Props {
   email: string;
 }
 
+// same text as the night job in supabase writes
+const EXPIRED_REASON: string = 'Sista ansökningsdag passerad';
+
 const TRACK_LABELS: Record<Track, string> = {
   preschool: 'Förskollärare',
   dev: 'Utvecklare',
@@ -30,7 +33,8 @@ export default function JobList({ email }: Props) {
 
   async function loadJobs() {
     setLoading(true);
-    const { data, error: loadError } = await supabase.from('jobs').select('*').eq('skipped', false);
+    // skipped jobs are loaded too, so expired ones can be listed
+    const { data, error: loadError } = await supabase.from('jobs').select('*');
     if (loadError) {
       setError('Kunde inte hämta jobben.');
     } else {
@@ -50,8 +54,21 @@ export default function JobList({ email }: Props) {
     }
   }
 
+  function isExpired(job: Job): boolean {
+    return job.deadline !== null && daysLeft(job.deadline) < 0;
+  }
+
+  function isTodo(job: Job): boolean {
+    return !job.applied && !job.skipped && !isExpired(job);
+  }
+
+  // the night job sets this reason, but also catch ones that expired since then
+  function isExpiredNotApplied(job: Job): boolean {
+    return !job.applied && (job.skip_reason === EXPIRED_REASON || (!job.skipped && isExpired(job)));
+  }
+
   function countTodo(t: Track): number {
-    return jobs.filter((job: Job) => job.track === t && !job.applied && !job.skipped).length;
+    return jobs.filter((job: Job) => job.track === t && isTodo(job)).length;
   }
 
   const appliedJobs: Job[] = jobs
@@ -66,7 +83,11 @@ export default function JobList({ email }: Props) {
 
   const visible: Job[] = showApplied
     ? appliedInMonth
-    : sortJobs(jobs.filter((job: Job) => job.track === tab && !job.applied && !job.skipped));
+    : sortJobs(jobs.filter((job: Job) => job.track === tab && isTodo(job)));
+
+  const expired: Job[] = showApplied
+    ? []
+    : jobs.filter((job: Job) => job.track === tab && isExpiredNotApplied(job));
 
   return (
     <main className="page">
@@ -160,6 +181,25 @@ export default function JobList({ email }: Props) {
           );
         })}
       </ul>
+
+      {expired.length > 0 && (
+        <details className="expired">
+          <summary>Utgångna, ej sökta ({expired.length})</summary>
+          <ul>
+            {expired.map((job: Job) => (
+              <li key={job.id}>
+                <a href={job.url} target="_blank" rel="noreferrer">
+                  {job.title}
+                </a>
+                <span className="muted">
+                  {' '}
+                  {job.employer}, sista dag {job.deadline}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
     </main>
   );
 }
