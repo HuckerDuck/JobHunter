@@ -2,23 +2,18 @@ import { useState } from 'react';
 import { Job } from './types';
 
 interface Props {
+  // applied jobs already filtered on the month
   jobs: Job[];
+  month: string;
+  onMonthChange: (month: string) => void;
 }
 
-function currentMonth(): string {
-  return new Date().toLocaleDateString('sv-SE').slice(0, 7);
-}
-
-export default function ActivityReport({ jobs }: Props) {
-  const [month, setMonth] = useState<string>(currentMonth());
+export default function ActivityReport({ jobs, month, onMonthChange }: Props) {
   const [copied, setCopied] = useState<boolean>(false);
 
-  // applied jobs in the chosen month, oldest first
-  const applied: Job[] = jobs
-    .filter((job: Job) => job.applied && job.applied_date !== null && job.applied_date.startsWith(month))
-    .sort((a: Job, b: Job) => (a.applied_date ?? '').localeCompare(b.applied_date ?? ''));
-
-  const reportText: string = applied
+  // oldest first reads better in the report
+  const reportText: string = [...jobs]
+    .sort((a: Job, b: Job) => (a.applied_date ?? '').localeCompare(b.applied_date ?? ''))
     .map((job: Job) => `${job.applied_date}  ${job.title}, ${job.employer}`)
     .join('\n');
 
@@ -32,32 +27,19 @@ export default function ActivityReport({ jobs }: Props) {
     <section className="report">
       <div className="report-head">
         <label htmlFor="month">Månad</label>
-        <input id="month" type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
-        <button className="btn primary" onClick={copyReport} disabled={applied.length === 0}>
+        <input id="month" type="month" value={month} onChange={(e) => onMonthChange(e.target.value)} />
+        {month !== '' && (
+          <button className="btn ghost" onClick={() => onMonthChange('')}>
+            Alla
+          </button>
+        )}
+        <button className="btn primary" onClick={copyReport} disabled={jobs.length === 0}>
           {copied ? 'Kopierat!' : 'Kopiera'}
         </button>
       </div>
-
       <p className="muted small">
-        {applied.length} sökta jobb, båda spåren. Klistra in i aktivitetsrapporten hos Arbetsförmedlingen.
+        {jobs.length} sökta jobb{month === '' ? '' : ' den här månaden'}. Kopiera och klistra in i aktivitetsrapporten.
       </p>
-
-      {applied.length === 0 ? (
-        <p className="empty">Inga sökta jobb den här månaden.</p>
-      ) : (
-        <ul className="report-list">
-          {applied.map((job: Job) => (
-            <li key={job.id}>
-              <span className="report-date">{job.applied_date}</span>
-              <span>
-                <strong>{job.title}</strong>
-                <span className="muted"> {job.employer}</span>
-              </span>
-              <span className="report-track">{job.track === 'dev' ? 'Utvecklare' : 'Förskollärare'}</span>
-            </li>
-          ))}
-        </ul>
-      )}
     </section>
   );
 }

@@ -4,7 +4,6 @@ import { Job, Track } from './types';
 import { daysLeft, deadlineText, sortJobs, todayIso } from './jobUtils';
 import ActivityReport from './ActivityReport';
 
-type View = 'todo' | 'report';
 // a track tab, or the applied tab with both tracks
 type Tab = Track | 'applied';
 
@@ -20,7 +19,8 @@ const TRACK_LABELS: Record<Track, string> = {
 export default function JobList({ email }: Props) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [tab, setTab] = useState<Tab>('preschool');
-  const [view, setView] = useState<View>('todo');
+  // empty string means all months
+  const [month, setMonth] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,11 +58,14 @@ export default function JobList({ email }: Props) {
     .filter((job: Job) => job.applied)
     .sort((a: Job, b: Job) => (b.applied_date ?? '').localeCompare(a.applied_date ?? ''));
 
+  const appliedInMonth: Job[] = appliedJobs.filter(
+    (job: Job) => month === '' || (job.applied_date ?? '').startsWith(month),
+  );
+
   const showApplied: boolean = tab === 'applied';
-  const showReport: boolean = !showApplied && view === 'report';
 
   const visible: Job[] = showApplied
-    ? appliedJobs
+    ? appliedInMonth
     : sortJobs(jobs.filter((job: Job) => job.track === tab && !job.applied && !job.skipped));
 
   return (
@@ -88,25 +91,15 @@ export default function JobList({ email }: Props) {
         </button>
       </nav>
 
-      {!showApplied && (
-        <div className="toggle">
-          <button className={view === 'todo' ? 'active' : ''} onClick={() => setView('todo')}>
-            Att söka
-          </button>
-          <button className={view === 'report' ? 'active' : ''} onClick={() => setView('report')}>
-            Rapport
-          </button>
-        </div>
-      )}
-
       {error && <p className="error">{error}</p>}
       {loading && <p className="muted">Laddar jobb...</p>}
-      {!loading && showReport && <ActivityReport jobs={jobs} />}
-      {!loading && !showReport && visible.length === 0 && (
-        <p className="empty">{showApplied ? 'Inga sökta jobb än.' : 'Inget kvar att söka här. Bra jobbat!'}</p>
+      {!loading && showApplied && (
+        <ActivityReport jobs={appliedInMonth} month={month} onMonthChange={setMonth} />
+      )}
+      {!loading && visible.length === 0 && (
+        <p className="empty">{showApplied ? 'Inga sökta jobb här.' : 'Inget kvar att söka här. Bra jobbat!'}</p>
       )}
 
-      {!showReport && (
       <ul className="cards">
         {visible.map((job: Job) => {
           const urgent: boolean = job.deadline !== null && daysLeft(job.deadline) <= 3;
@@ -155,7 +148,6 @@ export default function JobList({ email }: Props) {
           );
         })}
       </ul>
-      )}
     </main>
   );
 }
