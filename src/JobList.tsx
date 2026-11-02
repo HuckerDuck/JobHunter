@@ -4,6 +4,7 @@ import { Job, Track } from './types';
 import { daysLeft, deadlineText, sortJobs, todayIso } from './jobUtils';
 import ActivityReport from './ActivityReport';
 import LetterBox from './LetterBox';
+import SkillGap from './SkillGap';
 
 // a track tab, or the applied tab with both tracks
 type Tab = Track | 'applied';
@@ -22,6 +23,7 @@ const TRACK_LABELS: Record<Track, string> = {
 
 export default function JobList({ email }: Props) {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [mySkills, setMySkills] = useState<string[]>([]);
   const [tab, setTab] = useState<Tab>('preschool');
   // starts on this month, empty string means all months
   const [month, setMonth] = useState<string>(todayIso().slice(0, 7));
@@ -42,6 +44,15 @@ export default function JobList({ email }: Props) {
       setJobs(data as Job[]);
     }
     setLoading(false);
+    loadMySkills();
+  }
+
+  // comma list in the profile table, so I can update it without a deploy
+  async function loadMySkills() {
+    const { data } = await supabase.from('profile').select('content').eq('kind', 'dev_skills').maybeSingle();
+    if (data) {
+      setMySkills((data.content as string).split(',').map((s: string) => s.trim()));
+    }
   }
 
   // update the list right away, roll back if the db says no
@@ -117,6 +128,9 @@ export default function JobList({ email }: Props) {
       {loading && <p className="muted">Laddar jobb...</p>}
       {!loading && showApplied && (
         <ActivityReport jobs={appliedInMonth} month={month} onMonthChange={setMonth} />
+      )}
+      {!loading && tab === 'dev' && (
+        <SkillGap jobs={jobs.filter((job: Job) => job.track === 'dev')} mySkills={mySkills} />
       )}
       {!loading && visible.length === 0 && (
         <p className="empty">{showApplied ? 'Inga sökta jobb här.' : 'Inget kvar att söka här. Bra jobbat!'}</p>
