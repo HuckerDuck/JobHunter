@@ -9,10 +9,6 @@ import SkillGap from './SkillGap';
 // a track tab, or the applied tab with both tracks
 type Tab = Track | 'applied';
 
-interface Props {
-  email: string;
-}
-
 // same text as the night job in supabase writes
 const EXPIRED_REASON: string = 'Sista ansökningsdag passerad';
 
@@ -21,7 +17,7 @@ const TRACK_LABELS: Record<Track, string> = {
   dev: 'Utvecklare',
 };
 
-export default function JobList({ email }: Props) {
+export default function JobList() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [mySkills, setMySkills] = useState<string[]>([]);
   const [tab, setTab] = useState<Tab>('preschool');
@@ -104,10 +100,7 @@ export default function JobList({ email }: Props) {
   return (
     <main className="page">
       <header className="top">
-        <div>
-          <h1>Jobbspårning</h1>
-          <p className="muted small">{email}</p>
-        </div>
+        <h1>Jobbspårning</h1>
         <button className="btn ghost" onClick={() => supabase.auth.signOut()}>
           Logga ut
         </button>
