@@ -18,6 +18,8 @@ export interface Job {
   skip_reason: string | null;
   letter_draft: string | null;
   sent_letter: string | null;
+  // date I called or mailed after applying
+  followed_up: string | null;
   // tech the ad asks for, written by the night search
   skills: string[];
   created_at: string;
