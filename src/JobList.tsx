@@ -5,6 +5,7 @@ import { daysLeft, deadlineText, sortJobs, todayIso } from './jobUtils';
 import ActivityReport from './ActivityReport';
 import LetterBox from './LetterBox';
 import SkillGap from './SkillGap';
+import FollowUp from './FollowUp';
 
 // a track tab, or the applied tab with both tracks
 type Tab = Track | 'applied';
@@ -119,6 +120,7 @@ export default function JobList() {
 
       {error && <p className="error">{error}</p>}
       {loading && <p className="muted">Laddar jobb...</p>}
+      {!loading && showApplied && <FollowUp jobs={appliedJobs} onUpdate={updateJob} />}
       {!loading && showApplied && (
         <ActivityReport jobs={appliedInMonth} month={month} onMonthChange={setMonth} />
       )}
@@ -144,6 +146,7 @@ export default function JobList() {
                 {showApplied ? (
                   <span className="deadline">
                     {TRACK_LABELS[job.track]}, sökt {job.applied_date ?? ''}
+                    {job.followed_up && `, följt upp ${job.followed_up}`}
                   </span>
                 ) : (
                   <span className={urgent ? 'deadline urgent' : 'deadline'}>{deadlineText(job.deadline)}</span>
@@ -169,7 +172,7 @@ export default function JobList() {
                 {showApplied ? (
                   <button
                     className="btn ghost"
-                    onClick={() => updateJob(job.id, { applied: false, applied_date: null })}
+                    onClick={() => updateJob(job.id, { applied: false, applied_date: null, followed_up: null })}
                   >
                     Ångra
                   </button>
