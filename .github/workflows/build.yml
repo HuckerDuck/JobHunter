@@ -1,0 +1,24 @@
+name: Build
+
+# runs on every PR and when something lands on main or development
+on:
+  pull_request:
+  push:
+    branches: [main, development]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # ci uses the lock file, so it gets the same versions as me
+      - run: npm ci
+
+      # tsc -b and vite build, fails on type errors
+      - run: npm run build
