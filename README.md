@@ -1,5 +1,7 @@
 # JobHunter
 
+![Build](https://github.com/HuckerDuck/JobHunter/actions/workflows/build.yml/badge.svg)
+
 A small web app I use every day in my own job search. It keeps track of the jobs I find, which ones I have applied to, and drafts of my cover letters. I built it because a spreadsheet got messy fast when I was applying for two kinds of jobs at the same time.
 
 Live: https://jobhunter-se.vercel.app (login only, sign ups are closed)
