@@ -4,6 +4,8 @@ A small web app I use every day in my own job search. It keeps track of the jobs
 
 Live: https://jobhunter-se.vercel.app (login only, sign ups are closed)
 
+![The job list with green job cards, deadlines and the Ny badge](docs/screenshot.png)
+
 ## Features
 
 - **Two tracks**: one tab for developer jobs and one for preschool teacher jobs, each with a count of what is left to apply to
