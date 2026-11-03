@@ -25,5 +25,5 @@ export default function App() {
     return <p className="center muted">Laddar...</p>;
   }
 
-  return session ? <JobList email={session.user.email ?? ''} /> : <Login />;
+  return session ? <JobList /> : <Login />;
 }
