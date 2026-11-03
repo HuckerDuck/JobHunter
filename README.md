@@ -14,6 +14,7 @@ Live: https://jobhunter-se.vercel.app (login only, sign ups are closed)
 - **New badge**: jobs found today or yesterday get a "Ny" badge
 - **Letter drafts**: a cover letter draft on each card with a copy button. When I mark a job as applied, the draft is saved as the sent letter so I can read it again before an interview
 - **Applied tab with monthly report**: shows what I applied to per month, handy when I need to report my activity
+- **Follow ups**: jobs I applied to a week ago or more show up in a "Dags att följa upp" list until I mark them as followed up
 - **Expired jobs**: jobs past the deadline that I never applied to are moved to their own folded list
 - **Skill gap**: on the developer tab it counts which technologies the ads ask for and shows which ones I already know and which I am missing
 - **Works on the phone**: has an icon and a web manifest, so it can be added to the home screen
@@ -40,7 +41,7 @@ Night search (scheduled job) ──> Supabase: jobs, profile ──> React app (
 
 | Table | What it holds |
 | --- | --- |
-| `jobs` | track, employer, title, status, url, deadline, applied, applied_date, skipped, skip_reason, note, letter_draft, sent_letter, skills (`text[]`) |
+| `jobs` | track, employer, title, status, url, deadline, applied, applied_date, followed_up, skipped, skip_reason, note, letter_draft, sent_letter, skills (`text[]`) |
 | `profile` | kind (cv, letter, dev_cv, dev_letter, dev_skills) and content |
 
 ### Security
@@ -88,6 +89,5 @@ src/
 
 ## What I want to add next
 
-- A reminder to follow up on jobs I applied to a week ago
 - Edit the letter draft directly in the app
 - Tests with Vitest and a GitHub Actions build check
