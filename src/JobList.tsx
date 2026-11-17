@@ -16,7 +16,13 @@ const EXPIRED_REASON: string = 'Sista ansökningsdag passerad';
 const TRACK_LABELS: Record<Track, string> = {
   preschool: 'Förskollärare',
   dev: 'Utvecklare',
+  fritids: 'Fritids',
+  rektor: 'Rektor förskola',
+  support: 'IT-support',
 };
+
+// these tracks have skills from the night search
+const SKILL_TRACKS: Track[] = ['dev', 'support'];
 
 export default function JobList() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -124,8 +130,8 @@ export default function JobList() {
       {!loading && showApplied && (
         <ActivityReport jobs={appliedInMonth} month={month} onMonthChange={setMonth} />
       )}
-      {!loading && tab === 'dev' && (
-        <SkillGap jobs={jobs.filter((job: Job) => job.track === 'dev')} mySkills={mySkills} />
+      {!loading && tab !== 'applied' && SKILL_TRACKS.includes(tab) && (
+        <SkillGap jobs={jobs.filter((job: Job) => job.track === tab)} mySkills={mySkills} />
       )}
       {!loading && visible.length === 0 && (
         <p className="empty">{showApplied ? 'Inga sökta jobb här.' : 'Inget kvar att söka här. Bra jobbat!'}</p>
@@ -145,7 +151,8 @@ export default function JobList() {
                 </span>
                 {showApplied ? (
                   <span className="deadline">
-                    {TRACK_LABELS[job.track]}, sökt {job.applied_date ?? ''}
+                    {/* fall back to the raw value if the db has a track the app does not know yet */}
+                    {TRACK_LABELS[job.track] ?? job.track}, sökt {job.applied_date ?? ''}
                     {job.followed_up && `, följt upp ${job.followed_up}`}
                   </span>
                 ) : (

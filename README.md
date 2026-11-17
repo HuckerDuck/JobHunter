@@ -10,7 +10,7 @@ Live: https://jobhunter-se.vercel.app (login only, sign ups are closed)
 
 ## Features
 
-- **Two tracks**: one tab for developer jobs and one for preschool teacher jobs, each with a count of what is left to apply to
+- **Five tracks**: tabs for preschool teacher, developer, fritids, preschool principal and IT support jobs, each with a count of what is left to apply to
 - **Green and yellow jobs**: green means a good match, yellow means worth a look later
 - **Deadlines**: cards are sorted by last day to apply, and jobs close to the deadline are marked in red
 - **New badge**: jobs found today or yesterday get a "Ny" badge

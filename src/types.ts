@@ -1,4 +1,4 @@
-export type Track = 'preschool' | 'dev';
+export type Track = 'preschool' | 'dev' | 'fritids' | 'rektor' | 'support';
 export type JobStatus = 'gron' | 'gul';
 
 // same columns as the jobs table in supabase
