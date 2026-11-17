@@ -22,15 +22,15 @@ export default function FollowUp({ jobs, onUpdate }: Props) {
   if (due.length === 0) return null;
 
   return (
-    <section className="report">
-      <h2>Dags att följa upp ({due.length})</h2>
+    // folded by default so the applied list is not pushed down
+    <details className="follow-up">
+      <summary>
+        Dags att följa upp <span className="count">{due.length}</span>
+      </summary>
       <p className="small muted">Sökt för minst {FOLLOW_UP_DAYS} dagar sedan. Ring eller mejla och fråga hur det går.</p>
-      <ul style={{ listStyle: 'none', padding: 0, margin: '0.5rem 0 0' }}>
+      <ul>
         {due.map((job: Job) => (
-          <li
-            key={job.id}
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}
-          >
+          <li key={job.id}>
             <span>
               <a href={job.url} target="_blank" rel="noreferrer">
                 {job.title}
@@ -46,6 +46,6 @@ export default function FollowUp({ jobs, onUpdate }: Props) {
           </li>
         ))}
       </ul>
-    </section>
+    </details>
   );
 }
